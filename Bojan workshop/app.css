@@ -1,0 +1,53 @@
+body {
+  font-family: sans-serif;
+  background-image: url("/images/starwars.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  background-size: cover;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.yoda {
+  margin-top: 100px;
+}
+
+.spaceship {
+  margin-top: 270px;
+}
+
+table {
+  margin: 330px 0 0 80px;
+}
+
+table,
+th,
+td {
+  padding: 3px;
+  color: aliceblue;
+  border-collapse: collapse;
+  border: 1px solid white;
+}
+
+.nextBtn {
+  padding: 5px;
+  margin: 15px 10px 0 170px;
+  color: black;
+  font-weight: 700;
+  background-color: white;
+  border-radius: 5px;
+  width: 140px;
+  height: 30px;
+}
+.previousBtn {
+  padding: 5px;
+  margin: 10px;
+  color: black;
+  font-weight: 700;
+  background-color: white;
+  border-radius: 5px;
+  width: 140px;
+  height: 30px;
+}
