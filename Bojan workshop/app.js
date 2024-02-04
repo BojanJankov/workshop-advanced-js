@@ -103,30 +103,33 @@ Impiety the view changes to a new table with the first ships and the previous bu
 //     url: "https://swapi.dev/api/starships/2/",
 //   };
 
-// Elements for
+// Elements for persons
 
 const yodaContainer = document.querySelector(".yoda-container");
 const yodaImg = document.querySelector(".yoda");
 
-const starwars_url = "https://swapi.dev/api/people/?page=1";
+const PERSONS_URL = "https://swapi.dev/api/people/?page=1";
 
-// First fetch function
+// First fetch function for persons
 
-const fetchStarWarsApi = () => {
-  fetch(starwars_url)
-    .then((res) => {
-      return res.json();
-    })
-    .then((data) => {
-      console.log(data);
-      renderPersonsTable(yodaContainer, data.results);
-    });
+const fetchStarWarsApi = async () => {
+  try {
+    const res = await fetch(PERSONS_URL);
+    const data = await res.json();
+
+    console.log(data.results);
+
+    renderPeopleTable(data);
+    renderButtonsPersons(yodaContainer, data, fetchStarWarsApi);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 // This function will be crate a HTML table with persons data
 
-const renderPersonsTable = (element, personsDetalis) => {
-  element.innerHTML = "";
+const generatePersonsTable = (personsDetalis) => {
+  yodaContainer.innerHTML = "";
   let rowHTML = "";
   for (let person of personsDetalis) {
     rowHTML += `
@@ -139,7 +142,7 @@ const renderPersonsTable = (element, personsDetalis) => {
     <td>${person.films.length}</td>
     <tr>`;
   }
-  element.innerHTML = `
+  yodaContainer.innerHTML = `
   <table class="yoda-table">
         <thead>
           <tr>
@@ -156,24 +159,147 @@ const renderPersonsTable = (element, personsDetalis) => {
         </tbody>
   </table>
   `;
-  renderButtons(yodaContainer);
 };
 
-// Add event listener for render table data
+const renderPeopleTable = (data) => {
+  generatePersonsTable(data.results);
+};
+// Add event listener for render table data for persons
 
 yodaImg.addEventListener("click", () => {
   fetchStarWarsApi();
 });
 
-// Function that create two buttons and placed under the table
+// Function that create two buttons and placed under the table for persons
 
-const renderButtons = (element) => {
-  const nextButton = document.createElement("button");
-  const previousButton = document.createElement("button");
-  element.appendChild(nextButton);
-  element.appendChild(previousButton);
-  nextButton.innerText = "Next persons";
-  previousButton.innerText = "Previous persons";
-  nextButton.className = "nextBtn";
-  previousButton.className = "previousBtn";
+const previousButtonPersons = document.createElement("button");
+
+const renderButtonsPersons = (element, data, callback) => {
+  if (data.previous) {
+    previousButtonPersons.innerText = "Previous persons";
+    previousButtonPersons.className = "previousBtnPersons";
+    element.appendChild(previousButtonPersons);
+    previousButtonPersons.addEventListener("click", () => {
+      callback(data.previous);
+    });
+  }
+
+  if (data.next) {
+    const nextButtonPersons = document.createElement("button");
+    nextButtonPersons.innerText = "Next persons";
+    nextButtonPersons.className = "nextBtnPersons";
+    element.appendChild(nextButtonPersons);
+    nextButtonPersons.addEventListener("click", () => {
+      callback(data.next);
+    });
+  }
 };
+
+// Spaceships fetch function
+
+const spaceShipFetch = async () => {
+  const response = await fetch("https://swapi.dev/api/starships/?page=1 ");
+  const data = await response.json();
+
+  console.log(data);
+  renderShipsTableHTML(spaceShipsContainer, data.results);
+
+  return data;
+};
+
+// Sapceship container
+
+const spaceShipsContainer = document.querySelector(".spaceship-container");
+
+// Spaceship table render function
+
+// const renderShipsTable = (element, shipsDetalis) => {
+//   element.innerHTML = "";
+//   let rowHTML = "";
+//   for (let ship of shipsDetalis) {
+//     rowHTML += `
+//     <tr>
+//     <td>${ship.name}</td>
+//     <td>${ship.model}</td>
+//     <td>${ship.manufacturer}</td>
+//     <td>${ship.cost_in_credits}</td>
+//     <td>${ship.passengers}</td>
+//     <td>${ship.starship_class}</td>
+//     <tr>`;
+//   }
+//   element.innerHTML = `
+//   <table class="ship-table">
+//         <thead>
+//           <tr>
+//             <th>Name</th>
+//             <th>Model</th>
+//             <th>Manufactuer</th>
+//             <th>Cost(credits)</th>
+//             <th>People Capacity</th>
+//             <th>Class</th>
+//           </tr>
+//         </thead>
+//         <tbody>
+//         ${rowHTML}
+//         </tbody>
+//   </table>
+//   `;
+//   renderButtonsShips(spaceShipsContainer);
+// };
+
+const renderShipsTableHTML = (element, shipsDetalis) => {
+  const rowHTML = (element.innerHTML = shipsDetalis.map((ship) => {
+    return `<tr>
+    <td>${ship.name}</td>
+    <td>${ship.model}</td>
+    <td>${ship.manufacturer}</td>
+    <td>${ship.cost_in_credits}</td>
+    <td>${ship.passengers}</td>
+    <td>${ship.starship_class}</td>
+    <tr>`;
+  }));
+
+  element.innerHTML = `
+  <table class="ship-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Model</th>
+            <th>Manufactuer</th>
+            <th>Cost(credits)</th>
+            <th>People Capacity</th>
+            <th>Class</th>
+          </tr>
+        </thead>
+        <tbody>
+        ${rowHTML}
+        </tbody>
+  </table>
+  `;
+
+  renderButtonsShips(spaceShipsContainer);
+};
+
+// Spaceship buttons and render buttons function
+
+const nextButtonShips = document.createElement("button");
+const previousButtonShips = document.createElement("button");
+
+const renderButtonsShips = (element) => {
+  element.appendChild(nextButtonShips);
+  element.appendChild(previousButtonShips);
+  nextButtonShips.innerText = "Next spaceships";
+  previousButtonShips.innerText = "Previous spaceships";
+  nextButtonShips.className = "nextBtnShips";
+  previousButtonShips.className = "previousBtnShips";
+};
+
+// Selector for spaceship img
+
+const shipImg = document.querySelector(".spaceship");
+
+// Add event listener for spaceship img to display table
+
+shipImg.addEventListener("click", () => {
+  spaceShipFetch();
+});

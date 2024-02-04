@@ -18,20 +18,34 @@ body {
   margin-top: 270px;
 }
 
-table {
-  margin: 330px 0 0 80px;
+.yoda-table {
+  margin: 340px 0 0 80px;
 }
 
-table,
+.ship-table {
+  margin: 150px 60px 0 0;
+}
+
+.ship-table,
 th,
 td {
-  padding: 3px;
+  padding: 2px;
+  color: aliceblue;
+  border-collapse: collapse;
+  border: 1px solid white;
+  width: min-content;
+}
+
+.yoda-table,
+th,
+td {
+  padding: 2px;
   color: aliceblue;
   border-collapse: collapse;
   border: 1px solid white;
 }
 
-.nextBtn {
+.nextBtnPersons {
   padding: 5px;
   margin: 15px 10px 0 170px;
   color: black;
@@ -41,7 +55,7 @@ td {
   width: 140px;
   height: 30px;
 }
-.previousBtn {
+.previousBtnPersons {
   padding: 5px;
   margin: 10px;
   color: black;
@@ -49,5 +63,27 @@ td {
   background-color: white;
   border-radius: 5px;
   width: 140px;
+  height: 30px;
+}
+
+.nextBtnShips {
+  margin: 15px 10px 0 140px;
+  color: black;
+  font-weight: 700;
+  background-color: white;
+  border-radius: 5px;
+  width: 140px;
+  height: 30px;
+  padding: 5px;
+}
+
+.previousBtnShips {
+  padding: 5px;
+  margin: 10px;
+  color: black;
+  font-weight: 700;
+  background-color: white;
+  border-radius: 5px;
+  width: 150px;
   height: 30px;
 }
