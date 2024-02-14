@@ -103,36 +103,50 @@ Impiety the view changes to a new table with the first ships and the previous bu
 //     url: "https://swapi.dev/api/starships/2/",
 //   };
 
-// Elements for persons
+// Persons selectors
 
 const yodaContainer = document.querySelector(".yoda-container");
 const yodaImg = document.querySelector(".yoda");
+const previousButtonPersons = document.createElement("button");
 
-const PERSONS_URL = "https://swapi.dev/api/people/?page=1";
+// Ships selectors
+const spaceShipsContainer = document.querySelector(".spaceship-container");
+const shipImg = document.querySelector(".spaceship");
+const nextButtonShips = document.createElement("button");
+const previousButtonShips = document.createElement("button");
 
-// First fetch function for persons
+// Planet selectors
 
-const fetchStarWarsApi = async () => {
+const planetContainer = document.querySelector(".planet-container");
+const planetImage = document.querySelector(".planet");
+
+// URLS for fetching data
+
+const PERSONS_FIRST_URL = "https://swapi.dev/api/people/?page=1";
+const SHIPS_URL = "https://swapi.dev/api/starships/?page=1";
+
+// Fetch function for persons
+
+const fetchStarWarsApi = async (url) => {
   try {
-    const res = await fetch(PERSONS_URL);
+    const res = await fetch(url);
     const data = await res.json();
 
-    console.log(data.results);
+    // console.log(data.results);
 
     renderPeopleTable(data);
     renderButtonsPersons(yodaContainer, data, fetchStarWarsApi);
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 };
 
 // This function will be crate a HTML table with persons data
 
-const generatePersonsTable = (personsDetalis) => {
-  yodaContainer.innerHTML = "";
-  let rowHTML = "";
-  for (let person of personsDetalis) {
-    rowHTML += `
+const generatePersonsTable = (element, personsDetalis) => {
+  element.innerHTML = "";
+  const rowHTML = (element.innerHTML = personsDetalis.map((person) => {
+    return `
     <tr>
     <td>${person.name}</td>
     <td>${person.height}</td>
@@ -141,8 +155,8 @@ const generatePersonsTable = (personsDetalis) => {
     <td>${person.gender}</td>
     <td>${person.films.length}</td>
     <tr>`;
-  }
-  yodaContainer.innerHTML = `
+  }));
+  element.innerHTML = `
   <table class="yoda-table">
         <thead>
           <tr>
@@ -161,29 +175,20 @@ const generatePersonsTable = (personsDetalis) => {
   `;
 };
 
+// Render function for persons table
+
 const renderPeopleTable = (data) => {
-  generatePersonsTable(data.results);
+  generatePersonsTable(yodaContainer, data.results);
 };
 // Add event listener for render table data for persons
 
 yodaImg.addEventListener("click", () => {
-  fetchStarWarsApi();
+  fetchStarWarsApi(PERSONS_FIRST_URL);
 });
 
-// Function that create two buttons and placed under the table for persons
-
-const previousButtonPersons = document.createElement("button");
+// Function for crateing buttons for next and previous data and will work with callback function when is callled in fetch function.They will be create and will have function for displaying data in table when is clicked
 
 const renderButtonsPersons = (element, data, callback) => {
-  if (data.previous) {
-    previousButtonPersons.innerText = "Previous persons";
-    previousButtonPersons.className = "previousBtnPersons";
-    element.appendChild(previousButtonPersons);
-    previousButtonPersons.addEventListener("click", () => {
-      callback(data.previous);
-    });
-  }
-
   if (data.next) {
     const nextButtonPersons = document.createElement("button");
     nextButtonPersons.innerText = "Next persons";
@@ -193,59 +198,35 @@ const renderButtonsPersons = (element, data, callback) => {
       callback(data.next);
     });
   }
+  if (data.previous) {
+    const previousButtonPersons = document.createElement("button");
+    previousButtonPersons.innerText = "Previous persons";
+    previousButtonPersons.className = "previousBtnPersons";
+    element.appendChild(previousButtonPersons);
+    previousButtonPersons.addEventListener("click", () => {
+      callback(data.previous);
+    });
+  }
 };
 
 // Spaceships fetch function
 
-const spaceShipFetch = async () => {
-  const response = await fetch("https://swapi.dev/api/starships/?page=1 ");
-  const data = await response.json();
+const spaceShipFetch = async (url) => {
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
 
-  console.log(data);
-  renderShipsTableHTML(spaceShipsContainer, data.results);
+    console.log(data);
+    renderShipsTableHTML(spaceShipsContainer, data.results);
+    renderButtonsShips(spaceShipsContainer, data, spaceShipFetch);
 
-  return data;
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-// Sapceship container
-
-const spaceShipsContainer = document.querySelector(".spaceship-container");
-
-// Spaceship table render function
-
-// const renderShipsTable = (element, shipsDetalis) => {
-//   element.innerHTML = "";
-//   let rowHTML = "";
-//   for (let ship of shipsDetalis) {
-//     rowHTML += `
-//     <tr>
-//     <td>${ship.name}</td>
-//     <td>${ship.model}</td>
-//     <td>${ship.manufacturer}</td>
-//     <td>${ship.cost_in_credits}</td>
-//     <td>${ship.passengers}</td>
-//     <td>${ship.starship_class}</td>
-//     <tr>`;
-//   }
-//   element.innerHTML = `
-//   <table class="ship-table">
-//         <thead>
-//           <tr>
-//             <th>Name</th>
-//             <th>Model</th>
-//             <th>Manufactuer</th>
-//             <th>Cost(credits)</th>
-//             <th>People Capacity</th>
-//             <th>Class</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//         ${rowHTML}
-//         </tbody>
-//   </table>
-//   `;
-//   renderButtonsShips(spaceShipsContainer);
-// };
+// Spaceship table render table function
 
 const renderShipsTableHTML = (element, shipsDetalis) => {
   const rowHTML = (element.innerHTML = shipsDetalis.map((ship) => {
@@ -276,30 +257,109 @@ const renderShipsTableHTML = (element, shipsDetalis) => {
         </tbody>
   </table>
   `;
-
-  renderButtonsShips(spaceShipsContainer);
 };
 
 // Spaceship buttons and render buttons function
 
-const nextButtonShips = document.createElement("button");
-const previousButtonShips = document.createElement("button");
-
-const renderButtonsShips = (element) => {
-  element.appendChild(nextButtonShips);
-  element.appendChild(previousButtonShips);
-  nextButtonShips.innerText = "Next spaceships";
-  previousButtonShips.innerText = "Previous spaceships";
-  nextButtonShips.className = "nextBtnShips";
-  previousButtonShips.className = "previousBtnShips";
+const renderButtonsShips = (element, data, callback) => {
+  if (data.next) {
+    const nextButtonShips = document.createElement("button");
+    nextButtonShips.innerText = "Next spaceships";
+    nextButtonShips.className = "nextBtnShips";
+    element.appendChild(nextButtonShips);
+    nextButtonShips.addEventListener("click", () => {
+      callback(data.next);
+    });
+  }
+  if (data.previous) {
+    const previousButtonShips = document.createElement("button");
+    previousButtonShips.innerText = "Previous spaceships";
+    previousButtonShips.className = "previousBtnShips";
+    element.appendChild(previousButtonShips);
+    previousButtonShips.addEventListener("click", () => {
+      callback(data.previous);
+    });
+  }
 };
-
-// Selector for spaceship img
-
-const shipImg = document.querySelector(".spaceship");
 
 // Add event listener for spaceship img to display table
 
 shipImg.addEventListener("click", () => {
-  spaceShipFetch();
+  spaceShipFetch(SHIPS_URL);
+});
+
+// Planets
+
+const PLANETS_URL = "https://swapi.dev/api/planets/?page=1";
+
+const fetchPlantes = async (url) => {
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+    renderPlanetTable(planetContainer, data.results);
+    renderButtonsPlanet(planetContainer, data, fetchPlantes);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// Render table for planets
+
+const renderPlanetTable = (element, planetDetalis) => {
+  const rowHTML = (element.innerHTML = planetDetalis.map((planet) => {
+    return `<tr>
+    <td>${planet.name}</td>
+    <td>${planet.population}</td>
+    <td>${planet.climate}</td>
+    <td>${planet.gravity}</td>
+    <td>${planet.terrain}</td>    
+    <tr>`;
+  }));
+  element.innerHTML = `
+  <table class="planet-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Population</th>
+            <th>Climate</th>
+            <th>Gravity</th>
+            <th>Terrain</th>            
+          </tr>
+        </thead>
+        <tbody>
+        ${rowHTML}
+        </tbody>
+  </table>
+  `;
+};
+
+// Buttons for table
+
+const renderButtonsPlanet = (element, data, callback) => {
+  if (data.next) {
+    const nextButtonPlanets = document.createElement("button");
+    nextButtonPlanets.innerText = "Next planets";
+    nextButtonPlanets.className = "nextBtnPlanet";
+    element.appendChild(nextButtonPlanets);
+    nextButtonPlanets.addEventListener("click", () => {
+      callback(data.next);
+    });
+  }
+  if (data.previous) {
+    const previousButtonPlanet = document.createElement("button");
+    previousButtonPlanet.innerText = "Previous planets";
+    previousButtonPlanet.className = "previousBtnPlanet";
+    element.appendChild(previousButtonPlanet);
+    previousButtonPlanet.addEventListener("click", () => {
+      callback(data.previous);
+    });
+  }
+};
+
+// Add event listener for planet image
+
+planetImage.addEventListener("click", () => {
+  fetchPlantes(PLANETS_URL);
 });
