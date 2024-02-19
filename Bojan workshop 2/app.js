@@ -31,7 +31,8 @@ Add a filter by name, area, and population in ascending order
 const countryURL_ALL = "https://restcountries.com/v3.1/all";
 
 // Selectors
-// Search
+
+// Search selectors
 
 const serachInput = document.querySelector(".searchInput");
 const searchButton = document.querySelector(".searchButton");
@@ -47,7 +48,6 @@ const fetchCountryData = async (url) => {
     const response = await fetch(url);
     const data = await response.json();
 
-    displayErrorMessage(data, cardContainer);
     renderAllDataCountry(data, cardContainer);
 
     console.log(data);
@@ -86,14 +86,16 @@ const renderAllDataCountry = (data, element) => {
   element.innerHTML = cardHTML;
 };
 
-// Add event listener that work on click and display all countries if search box is empty
+// Add event listener for search button that work on click, and show data in containers
 
 searchButton.addEventListener("click", () => {
+  // If search input is empty, when someone click the button, all countries will be shown on screen in the containers
   if (serachInput.value === "") fetchCountryData(countryURL_ALL);
+  // Render data by name function, display country that is searched by name
   fetchSerachByName(serachInput.value);
 });
 
-// Search data
+// Fetch function for countries that will be search by name, and will fetch the data by name of country and display in render function
 
 const countryURL_NAME = `https://restcountries.com/v3.1/name/`;
 
@@ -102,9 +104,42 @@ const fetchSerachByName = async (searchValue) => {
     const response = await fetch(`${countryURL_NAME}${searchValue}`);
     const data = await response.json();
 
-    console.log(data);
+    renderCountryByName(data, cardContainer);
+
     return data;
   } catch (error) {
     console.log(error);
   }
+};
+
+// Render html container with data of country that is searched by name
+
+const renderCountryByName = (data, element) => {
+  const cardHTML = data
+    .map((country) => {
+      return `
+<section class="card-container">
+<div class="flag">
+  <img
+      src="${country.flags.png}"
+      alt="${country.flags.alt}"
+      width="100px"
+      class="flag"
+  />
+</div>
+<div class="countryInfo">
+  <h4>Name:${country.name.common} </h4>
+  <h4>Population: ${country.population}</h4>
+  <h4>Capital city: ${country.capital}</h4>
+  <h4>Area: ${country.area}</h4>
+</div>
+</section>
+`;
+    })
+    .join("");
+
+  element.innerHTML = cardHTML;
+
+  // After showing data in container for country, refresh the value of search input
+  serachInput.value = "";
 };
