@@ -129,6 +129,7 @@ const app = () => {
 
       // Calling render function
       renderAllDataCountry(countryData, cardContainer);
+      errorContainer.innerHTML = "";
     } catch (error) {
       displayError(error, errorContainer);
     }
@@ -137,6 +138,7 @@ const app = () => {
   // Error fucntion
 
   const displayError = (error, element) => {
+    cardContainer.innerHTML = "";
     element.innerHTML = error;
     serachInput.value = "";
   };
