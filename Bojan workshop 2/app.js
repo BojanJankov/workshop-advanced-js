@@ -33,7 +33,6 @@ const app = () => {
   const countryURL_NAME = `https://restcountries.com/v3.1/name/`;
 
   // Selectors
-
   // Error selector
   const errorContainer = document.querySelector(".error");
 
@@ -43,6 +42,12 @@ const app = () => {
 
   // Card selectors
   const cardContainer = document.querySelector(".all-card-container");
+
+  // Filter selectors
+
+  const filterInput = document.querySelector("#filterInput");
+  const sortInput = document.querySelector("#sortInput");
+  const filterButton = document.querySelector("#filterBtn");
 
   // Fetching data for all countries
 
@@ -70,10 +75,10 @@ const app = () => {
     }
   };
 
-  // Render function with HTML and data
+  // Render function
 
-  const renderAllDataCountry = (data, element) => {
-    const cardHTML = data
+  const renderAllDataCountry = (countryData, element) => {
+    const cardHTML = countryData
       .map((country) => {
         return `
 <section class="card-container">
@@ -111,7 +116,41 @@ const app = () => {
     serachInput.value = "";
   };
 
-  // Add event listener for search button that work on click, and show data in containers
+  // Filter function
+
+  const filterCountry = (filter, sort, countryData) => {
+    const countryDataCopy = [...countryData];
+
+    if (filter === "name") {
+      countryDataCopy.sort((a, b) => {
+        if (sort === "asc") {
+          if (a.name.common > b.name.common) return 1;
+          if (a.name.common < b.name.common) return -1;
+        } else {
+          if (a.name.common < b.name.common) return 1;
+          if (a.name.common > b.name.common) return -1;
+        }
+      });
+    }
+
+    if (filter === "population") {
+      countryDataCopy.sort((a, b) =>
+        sort === "asc"
+          ? a.population - b.population
+          : b.population - a.population
+      );
+    }
+
+    if (filter === "area") {
+      countryDataCopy.sort((a, b) =>
+        sort === "asc" ? a.area - b.area : b.area - a.area
+      );
+    }
+
+    renderAllDataCountry(countryDataCopy, cardContainer);
+  };
+
+  // Add event listeners
 
   searchButton.addEventListener("click", async () => {
     try {
@@ -133,6 +172,15 @@ const app = () => {
     } catch (error) {
       displayError(error, errorContainer);
     }
+  });
+
+  filterButton.addEventListener("click", () => {
+    const filterInputValue = filterInput.value;
+    const sortInputValue = sortInput.value;
+
+    filterCountry(filterInputValue, sortInputValue, countryData);
+
+    console.log(filterInputValue);
   });
 
   // Error fucntion

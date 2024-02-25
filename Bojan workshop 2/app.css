@@ -1,5 +1,6 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
 }
 
 .search-container {
@@ -21,6 +22,36 @@ body {
   margin: 10px;
   padding: 10px;
   width: 400px;
+}
+
+.filter-container {
+  display: flex;
+  margin: 5px 5px 5px 5px;
+  gap: 40px;
+  justify-content: space-evenly;
+}
+
+.form-control-one {
+  margin-left: 15px;
+}
+
+label {
+  font-size: 17px;
+}
+
+select {
+  height: 30px;
+  padding: 2px;
+  font-size: 15px;
+}
+
+.btn-form {
+  margin-left: 9px;
+}
+
+#filterBtn {
+  width: 100px;
+  height: 30px;
 }
 
 .card-container {
@@ -58,16 +89,6 @@ body {
   right: 850px;
   top: 85px;
 }
-
-/* .spinner-container {
-  position: fixed;
-  top: 10px;
-  right: 390px;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  z-index: 10000;
-} */
 
 /* SPINNER CSS */
 
